@@ -1,4 +1,5 @@
 {% load static %}
+{% load widget_tweaks %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -166,15 +167,23 @@
                     <p class="login-subtitle text-center">Inteligência para sua Aprovação.</p>
 
                     <form action="#" method="POST">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger p-1" role="alert">
+                            {{ form.non_field_errors }}
+                        </div>
+                        {% endif%}
+
                         <div class="mb-4 position-relative">
-                            <input type="text" id="email" class="form-control form-control-custom" placeholder=" ">
-                            <label for="email" class="form-label-floating">Username</label>
+                            <label for="{{ form.username.id_for_label }}", class="form-label-floating">Username</label>
+                            {{ form.username|add_class:"form-control form-control-custom"|attr:"placeholder:Username" }}
                             <i class="bi bi-person input-icon"></i>
                         </div>
 
                         <div class="mb-4 position-relative">
-                            <input type="password" id="password" class="form-control form-control-custom" placeholder=" ">
-                            <label for="password" class="form-label-floating">Senha</label>
+                            {{ form.password|add_class:"form-control form-control-custom"|attr:"placeholder:password" }}
+                            <label for="{{ form.password.id_for_label }}", class="form-label-floating">Password</label>
                             <i class="bi bi-lock input-icon"></i>
                         </div>
 

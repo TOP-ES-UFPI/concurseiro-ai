@@ -1,0 +1,60 @@
+{% extends 'concursoapp/base/base.html' %}
+{% load static %}
+
+{% block title %}Atividades{% endblock %}
+
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/questionnaire.css' %}">
+{% endblock %}
+
+{% block content %}
+<div>
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <p class="fs-6 fw-semibold mb-0">
+                        <span id="questionnaire-title-prefix">Nivelamento</span> -
+                        Questão <span id="question-number">1</span> de 5
+                    </p>
+                </div>
+                <div class="card-body p-4">
+
+                    <div class="progress mb-4">
+                        <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 20%;"
+                            aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+
+                    <div id="questionnaire-area">
+                        <p id="question-text" class="mb-4">Carregando questão...</p>
+                        <ul id="choices-container" class="list-group">
+                        </ul>
+                    </div>
+
+                    <div id="loading-area" class="text-center p-4 d-none">
+                        <div class="spinner-grow text-primary" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                        <h5 class="mt-3">Buscando as melhores questões...</h5>
+                    </div>
+
+                    <div id="feedback-area" class="alert mt-4 d-none"></div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button id="next-button" class="btn btn-primary ms-auto mt-3 d-none">
+                            Próxima Questão
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'scripts/questionnaire.js' %}"></script>
+{% endblock %}

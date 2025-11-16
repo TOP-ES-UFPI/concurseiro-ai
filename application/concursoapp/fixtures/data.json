@@ -1,0 +1,131 @@
+[
+  {
+    "model": "concursoapp.question",
+    "pk": 1,
+    "fields": {
+      "subject": "Python",
+      "text": "Qual é a palavra-chave usada para definir uma função em Python?"
+    }
+  },
+  { "model": "concursoapp.choice", "pk": 1, "fields": { "question": 1, "text": "func", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 2, "fields": { "question": 1, "text": "def", "is_correct": true } },
+  { "model": "concursoapp.choice", "pk": 3, "fields": { "question": 1, "text": "function", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 4, "fields": { "question": 1, "text": "define", "is_correct": false } },
+  
+  {
+    "model": "concursoapp.question",
+    "pk": 2,
+    "fields": {
+      "subject": "Python",
+      "text": "Qual destes tipos de dados é imutável em Python?"
+    }
+  },
+  { "model": "concursoapp.choice", "pk": 5, "fields": { "question": 2, "text": "list", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 6, "fields": { "question": 2, "text": "dict", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 7, "fields": { "question": 2, "text": "set", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 8, "fields": { "question": 2, "text": "tuple", "is_correct": true } },
+
+  {
+    "model": "concursoapp.question",
+    "pk": 3,
+    "fields": {
+      "subject": "Django",
+      "text": "Qual comando é usado para iniciar o servidor de desenvolvimento do Django?"
+    }
+  },
+  { "model": "concursoapp.choice", "pk": 9, "fields": { "question": 3, "text": "django run", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 10, "fields": { "question": 3, "text": "python manage.py startapp", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 11, "fields": { "question": 3, "text": "python manage.py runserver", "is_correct": true } },
+  { "model": "concursoapp.choice", "pk": 12, "fields": { "question": 3, "text": "django start", "is_correct": false } },
+  
+  {
+    "model": "concursoapp.question",
+    "pk": 4,
+    "fields": {
+      "subject": "Django",
+      "text": "No padrão MVT (Model-View-Template) do Django, o que o 'Model' representa?"
+    }
+  },
+  { "model": "concursoapp.choice", "pk": 13, "fields": { "question": 4, "text": "A lógica de negócios", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 14, "fields": { "question": 4, "text": "A interface do usuário", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 15, "fields": { "question": 4, "text": "A estrutura dos dados (banco de dados)", "is_correct": true } },
+  { "model": "concursoapp.choice", "pk": 16, "fields": { "question": 4, "text": "O roteamento de URLs", "is_correct": false } },
+  
+  {
+    "model": "concursoapp.question",
+    "pk": 5,
+    "fields": {
+      "subject": "Geografia",
+      "text": "Qual é o maior oceano do mundo?"
+    }
+  },
+  { "model": "concursoapp.choice", "pk": 17, "fields": { "question": 5, "text": "Oceano Atlântico", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 18, "fields": { "question": 5, "text": "Oceano Índico", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 19, "fields": { "question": 5, "text": "Oceano Ártico", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 20, "fields": { "question": 5, "text": "Oceano Pacífico", "is_correct": true } },
+  
+  {
+    "model": "concursoapp.question",
+    "pk": 6,
+    "fields": {
+      "subject": "Geografia",
+      "text": "Qual é a capital da Austrália?"
+    }
+  },
+  { "model": "concursoapp.choice", "pk": 21, "fields": { "question": 6, "text": "Sydney", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 22, "fields": { "question": 6, "text": "Melbourne", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 23, "fields": { "question": 6, "text": "Canberra", "is_correct": true } },
+  { "model": "concursoapp.choice", "pk": 24, "fields": { "question": 6, "text": "Brisbane", "is_correct": false } },
+  
+  {
+    "model": "concursoapp.question",
+    "pk": 7,
+    "fields": {
+      "subject": "História",
+      "text": "Em que ano começou a Segunda Guerra Mundial?"
+    }
+  },
+  { "model": "concursoapp.choice", "pk": 25, "fields": { "question": 7, "text": "1914", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 26, "fields": { "question": 7, "text": "1939", "is_correct": true } },
+  { "model": "concursoapp.choice", "pk": 27, "fields": { "question": 7, "text": "1941", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 28, "fields": { "question": 7, "text": "1945", "is_correct": false } },
+  
+  {
+    "model": "concursoapp.question",
+    "pk": 8,
+    "fields": {
+      "subject": "História",
+      "text": "Quem foi o primeiro presidente dos Estados Unidos?"
+    }
+  },
+  { "model": "concursoapp.choice", "pk": 29, "fields": { "question": 8, "text": "Thomas Jefferson", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 30, "fields": { "question": 8, "text": "Abraham Lincoln", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 31, "fields": { "question": 8, "text": "George Washington", "is_correct": true } },
+  { "model": "concursoapp.choice", "pk": 32, "fields": { "question": 8, "text": "John Adams", "is_correct": false } },
+
+  {
+    "model": "concursoapp.question",
+    "pk": 9,
+    "fields": {
+      "subject": "Python",
+      "text": "Como você escreve um comentário de uma linha em Python?"
+    }
+  },
+  { "model": "concursoapp.choice", "pk": 33, "fields": { "question": 9, "text": "// Comentário", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 34, "fields": { "question": 9, "text": "/* Comentário */", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 35, "fields": { "question": 9, "text": "# Comentário", "is_correct": true } },
+  { "model": "concursoapp.choice", "pk": 36, "fields": { "question": 9, "text": "", "is_correct": false } },
+  
+  {
+    "model": "concursoapp.question",
+    "pk": 10,
+    "fields": {
+      "subject": "Django",
+      "text": "O que o 'related_name' em um `ForeignKey` faz?"
+    }
+  },
+  { "model": "concursoapp.choice", "pk": 37, "fields": { "question": 10, "text": "Define o nome da coluna no banco", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 38, "fields": { "question": 10, "text": "Permite o acesso reverso do objeto relacionado para o objeto atual", "is_correct": true } },
+  { "model": "concursoapp.choice", "pk": 39, "fields": { "question": 10, "text": "Cria um índice no banco de dados", "is_correct": false } },
+  { "model": "concursoapp.choice", "pk": 40, "fields": { "question": 10, "text": "É obrigatório para todas as relações", "is_correct": false } }
+]

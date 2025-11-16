@@ -18,11 +18,17 @@ from django.contrib import admin
 from django.urls import path
 
 from concursoapp import views
+from api import views as api
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.HomeView.as_view(), name='index'),
+    path("admin/", admin.site.urls),
+
+    path("", views.HomeView.as_view(), name="index"),
     path("accounts/login/", auth_views.LoginView.as_view()),
-    path('accounts/logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
+    path("accounts/logout/", auth_views.LogoutView.as_view(next_page="/"), name="logout"),
+    path("questionnaire/", views.questionnaireView.as_view(), name="questionnaire"),
+
+    path("api/questionnaire/start/", api.GetInitialquestionnaireView.as_view(), name="api_questionnaire_start"),
+    path("api/questionnaire/next/", api.GetNextquestionnaireView.as_view(), name="api_questionnaire_next"),
 ]

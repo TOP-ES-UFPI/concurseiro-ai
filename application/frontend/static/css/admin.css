@@ -11,6 +11,10 @@
     /* ----------------------- */
 
     --navbar-height: 3rem;
+    
+    /* customizando bootstrap */
+    --bs-primary: #003B6A;
+    --bs-primary-rgb: 0, 59, 106;
 }
 
 body {
@@ -105,6 +109,10 @@ body {
     /* Corrigido: 'success' com 'ss' */
     background: #198754; /* Verde padrão */
     color: white
+}
+
+.progress-bar {
+    background-color: var(--color-primary);
 }
 
 select[readonly] {

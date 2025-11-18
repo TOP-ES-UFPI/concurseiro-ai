@@ -7,6 +7,74 @@
 
 <p class="fs-5 fw-semibold">Recentes</p>
 
+<!-- Card de Análise do Nivelamento (exibido dinamicamente) -->
+<div id="nivelamento-card" class="container bg-white px-0 py-4 px-md-4 mb-4" style="display: none;">
+    <div class="card border-primary">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"> Resultado do Nivelamento</h5>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="d-flex justify-content-around text-center mb-3">
+                        <div>
+                            <h3 class="text-primary mb-0" id="accuracy-value">-</h3>
+                            <small class="text-muted">Aproveitamento</small>
+                        </div>
+                        <div>
+                            <h3 class="text-success mb-0" id="correct-count">-</h3>
+                            <small class="text-muted">Acertos</small>
+                        </div>
+                        <div>
+                            <h3 class="text-danger mb-0" id="wrong-count">-</h3>
+                            <small class="text-muted">Erros</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="text-primary"> Erros por Cluster</h6>
+                    <div id="errors-by-cluster" class="mb-3">
+                        <p class="text-muted">Carregando...</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <h6 class="text-success">✨ Recomendações Geradas</h6>
+                    <div id="recommendations-info" class="mb-3">
+                        <p class="text-muted">Carregando...</p>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="alert alert-info mb-0">
+                <strong>Estratégia de Recomendação:</strong>
+                <p class="mb-0" id="recommendation-strategy">-</p>
+            </div>
+
+            <div class="alert alert-success mt-3 mb-0">
+                <strong>Diversidade de Clusters:</strong>
+                <p class="mb-0" id="cluster-diversity">-</p>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <a href="{% url 'questionnaire' %}" class="btn btn-primary btn-lg">
+                     Começar Simulado com Questões Recomendadas
+                </a>
+                <button class="btn btn-sm btn-outline-secondary" onclick="clearNivelamento()">
+                    Limpar Análise
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container bg-white px-0 py-4 px-md-4">
     <div class="row row-cols-1 row-cols-md-2 g-4">
         <div class="col">
@@ -27,4 +95,114 @@
 {% endblock %}
 
 {% block javascript %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        loadNivelamentoAnalysis();
+    });
+
+    function loadNivelamentoAnalysis() {
+        const analysisStr = localStorage.getItem('nivelamento_analysis');
+
+        if (!analysisStr) {
+            return; // Não há análise salva
+        }
+
+        try {
+            const analysis = JSON.parse(analysisStr);
+            const cardEl = document.getElementById('nivelamento-card');
+
+            // Exibir card
+            cardEl.style.display = 'block';
+
+            // Estatísticas gerais
+            document.getElementById('accuracy-value').innerText = analysis.summary.accuracy + '%';
+            document.getElementById('correct-count').innerText = analysis.summary.total_correct;
+            document.getElementById('wrong-count').innerText = analysis.summary.total_wrong;
+
+            // Erros por cluster
+            const errorsByClusterEl = document.getElementById('errors-by-cluster');
+            const errorsClusters = Object.keys(analysis.errors_by_cluster);
+
+            if (errorsClusters.length === 0) {
+                errorsByClusterEl.innerHTML = '<p class="text-success">🎉 Nenhum erro! Parabéns!</p>';
+            } else {
+                let errorsHtml = '<ul class="list-group list-group-flush">';
+
+                errorsClusters.forEach(clusterId => {
+                    const clusterData = analysis.errors_by_cluster[clusterId];
+                    errorsHtml += `
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>Cluster ${clusterId}</strong>
+                                <br>
+                                <small class="text-muted">${clusterData.subjects.join(', ')}</small>
+                            </div>
+                            <span class="badge bg-danger rounded-pill">${clusterData.count}</span>
+                        </li>
+                    `;
+                });
+
+                errorsHtml += '</ul>';
+                errorsByClusterEl.innerHTML = errorsHtml;
+            }
+
+            // Recomendações
+            const recommendationsEl = document.getElementById('recommendations-info');
+            const recommendations = analysis.recommendations;
+
+            let recsHtml = '<ul class="list-group list-group-flush">';
+
+            Object.keys(recommendations.by_cluster).forEach(clusterId => {
+                const count = recommendations.by_cluster[clusterId];
+                const isWeakCluster = errorsClusters.includes(clusterId);
+
+                recsHtml += `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Cluster ${clusterId}</strong>
+                            ${isWeakCluster ? '<span class="badge bg-warning text-dark ms-2">Cluster com Erros</span>' : ''}
+                        </div>
+                        <span class="badge bg-success rounded-pill">${count}</span>
+                    </li>
+                `;
+            });
+
+            recsHtml += '</ul>';
+            recommendationsEl.innerHTML = recsHtml;
+
+            // Estratégia
+            const targetingWeak = recommendations.targeting_weak_clusters;
+            const totalRecs = recommendations.questions.length;
+            const percentage = Math.round((targetingWeak / totalRecs) * 100);
+
+            const strategyEl = document.getElementById('recommendation-strategy');
+            strategyEl.innerHTML = `
+                <strong>${targetingWeak} de ${totalRecs}</strong> questões recomendadas (${percentage}%)
+                são dos clusters onde você errou. O sistema está priorizando suas áreas de dificuldade
+                e também explorando novos tópicos para ampliar seu conhecimento.
+            `;
+
+            // Diversidade de Clusters
+            const numClusters = Object.keys(recommendations.by_cluster).length;
+            const maxPerCluster = Math.max(...Object.values(recommendations.by_cluster));
+
+            const diversityEl = document.getElementById('cluster-diversity');
+            diversityEl.innerHTML = `
+                As recomendações vêm de <strong>${numClusters} clusters diferentes</strong>,
+                com no máximo <strong>${maxPerCluster} questões por cluster</strong>.
+                Isso garante que você não fique preso estudando apenas um tipo de questão! 
+            `;
+
+        } catch (error) {
+            console.error('Erro ao carregar análise:', error);
+        }
+    }
+
+    function clearNivelamento() {
+        localStorage.removeItem('nivelamento_analysis');
+        localStorage.removeItem('nivelamento_results');
+        localStorage.removeItem('nivelamento_timestamp');
+        document.getElementById('nivelamento-card').style.display = 'none';
+    }
+</script>
 {% endblock %}

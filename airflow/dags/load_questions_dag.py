@@ -170,7 +170,7 @@ def insert_choice(conn, question_id: int, choice_text: str, is_correct: bool):
 
 @dag(
     dag_id="question_data_loader_pipeline",
-    start_date=NotImplemented,
+    start_date=None,
     schedule_interval=None,
     catchup=False,
     tags=["etl", "data_load"],

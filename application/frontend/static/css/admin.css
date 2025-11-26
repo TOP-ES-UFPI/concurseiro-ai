@@ -1,0 +1,138 @@
+/********** Cores - Tema "Estudo Focado" (Azul) ***********/
+:root {
+    /* ----- NOVAS CORES ----- */
+    --color-primary: #004E8A;       /* Um azul forte e profissional */
+    --color-primary-dark: #003B6A;  /* Um azul mais escuro para barras */
+    --color-secondary: #bcdaf3;     /* Um azul bem claro para destaques (hover/active) */
+    --color-text: #FFFFFF;          /* Texto branco para fundos escuros */
+    --color-text-dark: #212529;     /* Texto escuro para fundos claros (preto suave) */
+    --color-table-stripe: #F8FAFC;  /* Fundo da tabela (zebra) */
+    --border-color: #DDE4E9;        /* Cor da borda (azul-acinzentado claro) */
+    /* ----------------------- */
+
+    --navbar-height: 3rem;
+    
+    /* customizando bootstrap */
+    --bs-primary: #003B6A;
+    --bs-primary-rgb: 0, 59, 106;
+}
+
+body {
+    height: 100vh;
+}
+
+.wrapper {
+    height: calc(100% - var(--navbar-height));
+}
+
+.wrapper>.row {
+    height: auto;
+}
+
+.navbar {
+    height: var(--navbar-height);
+    background: var(--color-primary-dark)  !important;
+    color: var(--color-text);
+}
+
+.navbar-brand {
+    height: var(--navbar-height);
+    color: var(--color-text)  !important;
+    background: var(--color-primary);
+    font-size: 1rem;
+}
+
+.navbar-toggler-icon {
+    font-size: 0.8rem;
+    /* Adicionado: Garante que o ícone do "hamburger" seja visível no fundo escuro */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.module-bar {
+    background: var(--color-primary-dark);
+    color: var(--color-text);
+}
+
+#sidebarMenu .nav-link {
+    /* Corrigido para usar a variável de texto principal */
+    color: var(--color-text);
+}
+
+#sidebarMenu .nav-link.active {
+    background: var(--color-secondary);
+    color: var(--color-text-dark);
+}
+
+#sidebarMenu .nav-link:hover {
+    background: var(--color-secondary);
+    color: var(--color-text-dark);
+}
+
+.table > thead {
+    /* Usando a cor secundária clara para o cabeçalho da tabela */
+    background: var(--color-secondary);
+    color: var(--color-text-dark);
+}
+.table > tbody tr:nth-child(odd) {
+    /* Usando a nova cor de listra (zebra) */
+    background: var(--color-table-stripe) !important;
+}
+
+/* Paginação Atualizada */
+.page-item.active .page-link {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-text);
+    z-index: 3;
+}
+
+.page-item .page-link {
+    color: var(--color-primary); /* Links de página inativos em azul */
+}
+
+.page-link:hover {
+    color: var(--color-primary-dark);
+    z-index: 2;
+}
+
+
+.bi-pencil-square {
+    /* Usando a cor primária para ícones */
+    color: var(--color-primary);
+}
+
+.toast-danger {
+    background: #dc3545; /* Vermelho padrão (um pouco mais suave) */
+    color: white;
+}
+.toast-succes {
+    /* Corrigido: 'success' com 'ss' */
+    background: #198754; /* Verde padrão */
+    color: white
+}
+
+.progress-bar {
+    background-color: var(--color-primary);
+}
+
+select[readonly] {
+    background: #eee;
+    pointer-events: none;
+    touch-action: none;
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    main>.container {
+        /* Usando a nova cor de borda definida */
+        border: 1px solid var(--border-color);
+    }
+
+    .navbar-brand {
+        font-size: 1.4rem;
+    }
+
+    .wrapper > .row {
+        height: 100%;
+    }
+}

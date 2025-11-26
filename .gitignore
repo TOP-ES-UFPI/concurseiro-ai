@@ -1,0 +1,74 @@
+# ============================
+# Django / Python .gitignore
+# ============================
+
+# Arquivos de bytecode do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ambiente virtual
+env/
+venv/
+ENV/
+.venv/
+
+# Configurações de IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs e arquivos temporários
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.sqlite
+*.pid
+*.seed
+*.bak
+*.tmp
+*.old
+
+# Pastas de build / distribuição
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Arquivos de cache e relatórios
+.coverage
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pyt
+
+# Variaveis de ambiente
+.env
+
+# airflow
+Txts/
+logs/
+standalone_admin_password.txt
+mlruns/

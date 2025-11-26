@@ -1,5 +1,6 @@
 from airflow.decorators import dag
 from airflow.decorators import task
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import text
@@ -12,8 +13,9 @@ BUCKET_NAME = "data-questions"
 
 
 def get_connection():
-    return create_engine("sqlite:/home/jelson/Projetos/concurseiro-ai/application/db.sqlite3")
-
+    hook = PostgresHook(postgres_conn_id="concuroia_conn_id")
+    engine = hook.get_sqlalchemy_engine()
+    return engine
 
 def list_question_files(bucket_name: str, prefix: str):
     """

@@ -142,7 +142,7 @@ def insert_question(conn, subject: str, text_q: str, source_file: str):
     Insere uma questão na tabela questions e retorna o id gerado.
     """
     sql = text("""
-        INSERT INTO questions (subject, text, source_file)
+        INSERT INTO concursoapp_questions (subject, text, source_file)
         VALUES (:subject, :text, :source_file)
         RETURNING id
     """)
@@ -160,7 +160,7 @@ def insert_choice(conn, question_id: int, choice_text: str, is_correct: bool):
     Insere uma alternativa na tabela choices.
     """
     sql = text("""
-        INSERT INTO choices (question_id, text, is_correct)
+        INSERT INTO concursoapp_choices (question_id, text, is_correct)
         VALUES (:question_id, :text, :is_correct)
     """)
     conn.execute(sql, {
@@ -183,7 +183,7 @@ def question_loader_etl():
     def remove_old_questions():
         engine = get_connection()
         with Session(engine) as session:
-            session.execute(text("DELETE FROM question"))
+            session.execute(text("DELETE FROM concursoapp_question"))
             session.commit()
     
     @task

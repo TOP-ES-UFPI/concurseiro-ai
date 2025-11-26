@@ -66,3 +66,9 @@ coverage.xml
 
 # Variaveis de ambiente
 .env
+
+# airflow
+Txts/
+logs/
+standalone_admin_password.txt
+mlruns/

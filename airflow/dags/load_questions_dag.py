@@ -142,14 +142,17 @@ def insert_question(conn, subject: str, text_q: str, source_file: str):
     Insere uma questão na tabela questions e retorna o id gerado.
     """
     sql = text("""
-        INSERT INTO concursoapp_questions (subject, text, source_file)
-        VALUES (:subject, :text, :source_file)
+        INSERT INTO concursoapp_question (subject, text, source_file, difficulty, times_answered, times_correct)
+        VALUES (:subject, :text, :source_file, :difficulty, :times_answered, :times_correct)
         RETURNING id
     """)
     result = conn.execute(sql, {
         "subject": subject,
         "text": text_q,
         "source_file": source_file,
+        "difficulty": 0.5,
+        "times_answered": 0,
+        "times_correct": 0
     })
     row = result.fetchone()
     return row[0]
@@ -160,7 +163,7 @@ def insert_choice(conn, question_id: int, choice_text: str, is_correct: bool):
     Insere uma alternativa na tabela choices.
     """
     sql = text("""
-        INSERT INTO concursoapp_choices (question_id, text, is_correct)
+        INSERT INTO concursoapp_choice (question_id, text, is_correct)
         VALUES (:question_id, :text, :is_correct)
     """)
     conn.execute(sql, {
@@ -183,6 +186,7 @@ def question_loader_etl():
     def remove_old_questions():
         engine = get_connection()
         with Session(engine) as session:
+            session.execute(text("DELETE FROM concursoapp_choice"))
             session.execute(text("DELETE FROM concursoapp_question"))
             session.commit()
     
@@ -198,41 +202,52 @@ def question_loader_etl():
         
         total_questions = 0
         total_files = 0
-
-        with engine.begin() as conn:
+        
+        with engine.connect() as conn: 
             for q_blob_name in question_files:
                 r_blob_name = q_blob_name.replace('-p.txt', '-r.txt')
 
+                # --- CÓDIGO DE LEITURA INSERIDO AQUI ---
+                # Tenta ler o arquivo de respostas
                 try:
                     answers_content = read_gcs_file(bucket_name, r_blob_name)
                 except Exception:
-                    print(f"Arquivo de respostas não encontrado no bucket: {r_blob_name}")
-                    continue
+                    print(f"Arquivo de respostas não encontrado ou erro ao ler: {r_blob_name}")
+                    continue 
 
+                # Tenta ler o arquivo de questões
+                try:
+                    questions_content = read_gcs_file(bucket_name, q_blob_name)
+                except Exception as e:
+                    print(f"Arquivo de questões não encontrado ou erro ao ler: {q_blob_name}: {e}")
+                    continue
+                    
                 subject = extract_subject(q_blob_name)
-                questions_content = read_gcs_file(bucket_name, q_blob_name)
+                # --- FIM DO CÓDIGO DE LEITURA ---
+
                 questions = parse_questions(questions_content)
                 answers = parse_answers(answers_content)
-
+                
                 if len(questions) != len(answers):
                     print(f"Número de questões ({len(questions)}) != respostas ({len(answers)}) em {q_blob_name}")
                     continue
 
                 for i, (q_number, q_text, choices) in enumerate(questions):
-                    try:
-                        correct_answer = answers[i]
-                        question_id = insert_question(conn, subject, q_text, q_blob_name)
-                        for letter, choice_text in choices:
-                            is_correct = (letter.upper() == correct_answer.upper())
-                            insert_choice(conn, question_id, choice_text, is_correct)
+                    with conn.begin() as transaction:
+                        try:
+                            correct_answer = answers[i]
+                            question_id = insert_question(conn, subject, q_text, q_blob_name) 
+                            for letter, choice_text in choices:
+                                is_correct = (letter.upper() == correct_answer.upper())
+                                insert_choice(conn, question_id, choice_text, is_correct)
+                            
+                            total_questions += 1
 
-                        total_questions += 1
-
-                    except Exception as e:
-                        print(f"Erro ao criar questão {q_number} de {q_blob_name}: {e}")
+                        except Exception as e:
+                            print(f"Erro ao criar questão {q_number} de {q_blob_name}: {e}")
 
                 total_files += 1
-                print(f"✓ {q_blob_name}: {len(questions)} questões importadas")
+                print(f"✓ {q_blob_name}: {len(questions)} questões processadas")
 
         print(f"\n✓ Total: {total_questions} questões de {total_files} arquivos")
 

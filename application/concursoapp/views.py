@@ -13,3 +13,8 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
 class questionnaireView(LoginRequiredMixin, generic.TemplateView):
     template_name = "concursoapp/questionnaire.html"
     login_url = "/accounts/login/"
+
+
+class UserStatsView(LoginRequiredMixin, generic.TemplateView):
+    template_name = "user_stats.html"
+    login_url = "/accounts/login/"

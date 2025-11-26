@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    const TOTAL_QUESTIONS = 5;  // Total de questões por rodada
+
     let currentQuestions = [];
     let questionIndex = 0;
     let questionnaireResults = [];
     let isNivelamento = true;
-    
+
     const questionnaireAreaEl = document.getElementById('questionnaire-area');
     const loadingAreaEl = document.getElementById('loading-area');
 
@@ -56,11 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         questionTextEl.innerText = numQuestions + ") " + question.text;
         questionNumberEl.innerText = questionIndex + 1;
-        
-        const progress = (numQuestions / 5) * 100;
+
+        const progress = (numQuestions / TOTAL_QUESTIONS) * 100;
         progressBarEl.style.width = `${progress}%`;
         progressBarEl.setAttribute('aria-valuenow', progress);
-        progressBarEl.innerText = `${progress}%`;
+        progressBarEl.innerText = `${Math.round(progress)}%`;
 
 
         question.choices.forEach((choice, index) => {
@@ -115,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         nextButtonEl.classList.remove('d-none');
-        if (questionIndex === 4) {
+        if (questionIndex === TOTAL_QUESTIONS - 1) {
             nextButtonEl.innerText = "Finalizar e Carregar Novas Questões";
         } else {
             nextButtonEl.innerText = "Próxima Questão";
@@ -125,11 +127,46 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleNextClick() {
         questionIndex++;
 
-        if (questionIndex < 5) {
+        if (questionIndex < TOTAL_QUESTIONS) {
             displayQuestion();
         } else {
-            fetchNextQuestions();
+            // Se é nivelamento, salvar resultados e redirecionar
+            if (isNivelamento) {
+                saveNivelamentoAndRedirect();
+            } else {
+                fetchNextQuestions();
+            }
         }
+    }
+
+    async function saveNivelamentoAndRedirect() {
+        // Salvar resultados no localStorage
+        localStorage.setItem('nivelamento_results', JSON.stringify(questionnaireResults));
+        localStorage.setItem('nivelamento_timestamp', new Date().toISOString());
+
+        // Analisar resultados via API
+        try {
+            const response = await fetch('/api/nivelamento/analysis/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    results: questionnaireResults
+                })
+            });
+
+            if (response.ok) {
+                const analysis = await response.json();
+                localStorage.setItem('nivelamento_analysis', JSON.stringify(analysis));
+            }
+        } catch (error) {
+            console.error('Erro ao analisar nivelamento:', error);
+        }
+
+        // Redirecionar para home
+        window.location.href = '/';
     }
 
     async function fetchNextQuestions() {

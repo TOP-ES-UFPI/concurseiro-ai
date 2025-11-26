@@ -189,12 +189,12 @@ def question_loader_etl():
     @task
     def load_questions():
         engine = get_connection()
-        prefix = "data-v1/"
+        prefix = "dataset-v1/"
         bucket_name = BUCKET_NAME
         question_files = list_question_files(bucket_name, prefix)
 
         if not question_files:
-            return FileNotFoundError("Nenhum arquivo de questão encontrado no bucket.")
+            raise FileNotFoundError("Nenhum arquivo de questão encontrado no bucket.")
         
         total_questions = 0
         total_files = 0

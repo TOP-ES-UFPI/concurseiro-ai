@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Minhas Estatísticas - Concurseiro AI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        transition: transform 0.2s;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .progress {
+        background-color: #e9ecef;
+    }
+    .progress-bar.text-success {
+        background-color: #28a745;
+    }
+    .progress-bar.text-warning {
+        background-color: #ffc107;
+    }
+    .progress-bar.text-danger {
+        background-color: #dc3545;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">📊 Minhas Estatísticas</h1>
+            <p class="lead">Acompanhe seu progresso e desempenho</p>
+        </div>
+    </div>
+
+    <!-- Estatísticas Gerais -->
+    <div class="mb-5">
+        <h3 class="mb-3">Visão Geral</h3>
+        <div id="overall-stats">
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Carregando...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assuntos que precisam de atenção -->
+    <div class="mb-5">
+        <h3 class="mb-3">🎯 Foco de Estudos</h3>
+        <div id="weak-subjects"></div>
+    </div>
+
+    <!-- Desempenho por Assunto -->
+    <div class="mb-5">
+        <h3 class="mb-3">📚 Desempenho por Assunto</h3>
+        <div id="subject-performance">
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Carregando...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botões de Ação -->
+    <div class="row mb-5">
+        <div class="col text-center">
+            <a href="{% url 'questionnaire' %}" class="btn btn-primary btn-lg me-2">
+                🎯 Continuar Praticando
+            </a>
+            <a href="{% url 'index' %}" class="btn btn-outline-secondary btn-lg">
+                🏠 Voltar ao Início
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'scripts/user_stats.js' %}"></script>
+{% endblock %}

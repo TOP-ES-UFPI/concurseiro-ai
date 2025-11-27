@@ -13,38 +13,62 @@ import os
 import logging
 from django.http import HttpResponse
 import mlflow
-from . import model_state
+from django.conf import settings
+from google.cloud import storage
 
 
 logger = logging.getLogger(__name__)
 
-MODEL_NAME = "cluster_model"
+GCS_BUCKET_NAME = "data-mlflow-concursoia"
+GCS_RUN_ID_PREFIX = "artefatos/6/models"
+
+
+MODEL_NAME = "clustering_model"
 MODEL_LOCAL_FILENAME = 'cluster_model.pkl'
+LATEST_MODEL_URI = f"models:/{MODEL_NAME}/latest"
+MODEL_ARTIFACT_FILENAME = 'model.pkl'
 MODELS_DIR = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
     'ml', 'models'
 )
+LOCAL_FILE_PATH = os.path.join(MODELS_DIR, MODEL_LOCAL_FILENAME)
 
 
 def download_model():
     mlflow.set_tracking_uri("http://136.113.82.244:5000/")
     latest_version = mlflow.tracking.MlflowClient().get_latest_versions(
         name=MODEL_NAME, 
-        stages=["Staging", "Production", "None"]
+        stages=["None"]
     )[0]
 
-    artifact_uri = latest_version.source
-    version_string = f"v{latest_version.version} (Run: {latest_version.run_id[:6]})"
-    model_state.MODEL_VERSION_GLOBAL = version_string
+    model_version = latest_version._version
+    run_id = latest_version._source.split("/")[1]
 
-    mlflow.artifacts.download_artifacts(
-        artifact_uri=artifact_uri, 
-        dst_path=MODELS_DIR 
+    settings.MODEL_VERSION_GLOBAL = f"v{model_version}"
+
+    gcs_blob_path = (
+        f"{GCS_RUN_ID_PREFIX}/"
+        f"{run_id}/"
+        f"artifacts/"
+        f"{MODEL_ARTIFACT_FILENAME}"
     )
+    
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(GCS_BUCKET_NAME)
+    blob = bucket.blob(gcs_blob_path)
+
+    if not blob.exists():
+        raise FileNotFoundError(f"Objeto não encontrado no GCS: {gcs_blob_path}")
+
+    os.makedirs(MODELS_DIR, exist_ok=True)
+    blob.download_to_filename(LOCAL_FILE_PATH)
+    
 
 
 def load_cluster_model():
     """Carrega modelo de clustering (cached)"""
+
+    download_model()
 
     model_path = os.path.join(MODELS_DIR, 'cluster_model.pkl')
 
@@ -92,6 +116,7 @@ class GetInitialquestionnaireView(APIView):
                 return Response(serializer.data)
 
             except Exception as e:
+                raise
                 logger.error(f"Erro clustering: {e}")
 
         # Fallback: questões aleatórias

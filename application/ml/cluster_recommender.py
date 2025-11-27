@@ -201,8 +201,9 @@ class ClusterRecommender:
         """Carrega modelo"""
         with open(filepath, 'rb') as f:
             data = pickle.load(f)
-        self.vectorizer = data['vectorizer']
-        self.kmeans = data['kmeans']
-        self.question_vectors = data['question_vectors']
-        self.questions_df = data['questions_df']
-        self.n_clusters = data['n_clusters']
+
+        self.vectorizer = data.vectorizer
+        self.kmeans = data.kmeans
+        self.question_vectors = data.question_vectors
+        self.questions_df = data.questions_df
+        self.n_clusters = data.n_clusters

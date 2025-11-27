@@ -72,3 +72,6 @@ Txts/
 logs/
 standalone_admin_password.txt
 mlruns/
+
+mlflow/
+*.sh

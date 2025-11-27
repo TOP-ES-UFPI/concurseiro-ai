@@ -7,7 +7,7 @@ from sqlalchemy.sql import text
 
 from google.cloud import storage
 
-from dags.ml.train_tasks import train_clustering_model
+from ml.train_tasks import train_clustering_model
 
 
 def get_connection():

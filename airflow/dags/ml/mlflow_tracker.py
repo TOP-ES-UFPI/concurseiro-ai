@@ -8,8 +8,11 @@ import json
 import logging
 import numpy as np
 
+from airflow.models import Variable
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
 
 
 class MLflowTracker:
@@ -25,9 +28,7 @@ class MLflowTracker:
         Args:
             experiment_name: Nome do experimento
         """
-        
-        tracking = os.environ.get("TRACKING_URI_ENV_VAR")
-        mlflow.set_tracking_uri(tracking)
+        mlflow.set_tracking_uri("http://136.113.82.244:5000/")
 
         try:
             self.experiment_id = mlflow.create_experiment(experiment_name)
@@ -37,7 +38,7 @@ class MLflowTracker:
         mlflow.set_experiment(experiment_name)
         self.client = MlflowClient()
 
-        logger.info(f"MLflow configurado. Backend: {tracking}, Experimento ID: {self.experiment_id}")
+        logger.info(f"MLflow configurado, Experimento ID: {self.experiment_id}")
 
     def start_training_run(self, run_name=None, tags=None):
         if run_name is None:
@@ -76,7 +77,7 @@ class MLflowTracker:
         """
         mlflow.sklearn.log_model(
             sk_model=model,
-            artifact_path=model_name,
+            name=model_name,
             registered_model_name=model_name
         )
         logger.info(f"Modelo registrado no PostgreSQL/GCS: {model_name}")

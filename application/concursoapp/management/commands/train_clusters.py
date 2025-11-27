@@ -27,7 +27,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(' Treinando modelo de clustering...'))
 
         # Inicializar MLflow
-        tracker = MLflowTracker(experiment_name="question_clustering")
+        tracker = MLflowTracker(experiment_name="question_clustering_v2")
         run = tracker.start_training_run(
             run_name=f"clustering_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
             tags={

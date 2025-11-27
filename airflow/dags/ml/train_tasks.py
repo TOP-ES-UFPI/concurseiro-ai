@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 import pandas as pd
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine
 from sklearn.metrics import silhouette_score
 import logging
 
@@ -11,10 +11,13 @@ logger.setLevel(logging.INFO)
 
 
 def extract_questions_data(engine):
-    sql_query = text("SELECT id, text, subject FROM concursoapp_question")
+    sql_query = "SELECT id, text, subject FROM concursoapp_question"
     
-    with engine.connect() as connection:
-        df = pd.read_sql(sql_query, connection)
+    conn = engine.raw_connection()
+    try:
+        df = pd.read_sql(sql_query, conn)
+    finally:
+        conn.close()
     
     if df.empty:
         logger.warning("Nenhuma questão encontrada no banco de dados!")
@@ -26,21 +29,21 @@ def extract_questions_data(engine):
 
 def train_clustering_model(engine, n_clusters=3):
     """Treina o modelo de clustering."""
-    from dags.ml.cluster_recommender import ClusterRecommender
-    from dags.ml.mlflow_tracker import MLflowTracker
+    from ml.cluster_recommender import ClusterRecommender
+    from ml.mlflow_tracker import MLflowTracker
 
     df = extract_questions_data(engine)
     if df is None:
         return
 
-    tracker = MLflowTracker(experiment_name="question_clustering")
+    tracker = MLflowTracker(experiment_name="question_clustering_v2")
     run = tracker.start_training_run(
         run_name=f"clustering_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
         tags={'model_type': 'clustering', 'algorithm': 'kmeans_tfidf'}
     )
     
     try:
-        logger.info(f"🧠 Treinando com {n_clusters} clusters...")
+        logger.info(f"Treinando com {n_clusters} clusters...")
         
         recommender = ClusterRecommender(n_clusters=n_clusters)
         metrics = recommender.fit(df)

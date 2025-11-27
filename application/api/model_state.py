@@ -1,0 +1,1 @@
+MODEL_VERSION_GLOBAL = "v0.0.0 (Global Default)"

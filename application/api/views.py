@@ -12,17 +12,41 @@ from ml.cluster_visualizer import ClusterVisualizer
 import os
 import logging
 from django.http import HttpResponse
+import mlflow
+from . import model_state
+
 
 logger = logging.getLogger(__name__)
+
+MODEL_NAME = "cluster_model"
+MODEL_LOCAL_FILENAME = 'cluster_model.pkl'
+MODELS_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    'ml', 'models'
+)
+
+
+def download_model():
+    mlflow.set_tracking_uri("http://136.113.82.244:5000/")
+    latest_version = mlflow.tracking.MlflowClient().get_latest_versions(
+        name=MODEL_NAME, 
+        stages=["Staging", "Production", "None"]
+    )[0]
+
+    artifact_uri = latest_version.source
+    version_string = f"v{latest_version.version} (Run: {latest_version.run_id[:6]})"
+    model_state.MODEL_VERSION_GLOBAL = version_string
+
+    mlflow.artifacts.download_artifacts(
+        artifact_uri=artifact_uri, 
+        dst_path=MODELS_DIR 
+    )
 
 
 def load_cluster_model():
     """Carrega modelo de clustering (cached)"""
-    models_dir = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-        'ml', 'models'
-    )
-    model_path = os.path.join(models_dir, 'cluster_model.pkl')
+
+    model_path = os.path.join(MODELS_DIR, 'cluster_model.pkl')
 
     if os.path.exists(model_path):
         recommender = ClusterRecommender()
